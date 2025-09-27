@@ -3,4 +3,4 @@
 
 US4 is an unblоcked site created by Voucan.
 _______________________________________________________________________________________
-This is a forked and modified copy. There may be errors in code directory. If you find any errors you may not do anything because I have no discord server 😔 - TS GUY FORKED MY REPO WHY NOT US4 HES CLAMING ITS HIS: https://github.com/7-7-7-10/7-7-7-10.github.io
+This is a forked and modified copy. There may be errors in code directory. If you find any errors you may not do anything because I have no discord server ✌️
