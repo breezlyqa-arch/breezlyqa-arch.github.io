@@ -569,6 +569,12 @@
     "alt": "Soccer Random",
     "title": "Soccer Random"
   },
+    {
+    "url": "/pages/games-frame?url=/pages/games/sonic-advance/",
+    "img": "/pages/images/sonicadv.png",
+    "alt": "Sonic Advance",
+    "title": "Sonic Advance"
+  },
   {
     "url": "/pages/games-frame?url=/pages/games/spacebarclicker/",
     "img": "/pages/images/spacebar.png",
