@@ -197,6 +197,12 @@
     "alt": "Dadish 3",
     "title": "Dadish 3"
   },
+    {
+    "url": "/pages/games-frame?url=/pages/games/deltarune/",
+    "img": "/pages/images/deltarune.jpg",
+    "alt": "Deltarune",
+    "title": "Deltarune"
+  },
   {
     "url": "/pages/games-frame?url=/pages/games/die-in-the-dungeon/",
     "img": "/pages/images/ditd.jpg",
