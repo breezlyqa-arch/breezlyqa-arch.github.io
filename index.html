@@ -287,7 +287,7 @@
       <button class="nav-btn" onclick="setIframe('/pages/games?upd=', 'Games')">
         <i class="fas fa-gamepad"></i>
       </button>
-      <button class="nav-btn" onclick="setIframe('/pages/roms?upd=', 'Roms')">
+      <button class="nav-btn" onclick="setIframe('/pages/evil-nexus?upd=', 'Nexus')">
         <i class="fa-solid fa-cloud"></i>
       </button>
       <button class="nav-btn" onclick="setIframe('/pages/heartive?upd=', 'Media')">
@@ -388,7 +388,7 @@ function internal(url) {
       case 'nexus://media': return () => setIframe('/pages/heartive?upd=', 'Media');
       case 'nexus://apps': return () => setIframe('/pages/apps?upd=', 'Apps');
       case 'nexus://partners': return () => setIframe('/pages/partners?upd=', 'Partners');
-      case 'nexus://roms': return () => setIframe('/pages/roms?upd=', 'roms');
+      case 'nexus://evil-nexus': return () => setIframe('/pages/evil-nexus?upd=', 'evil-nexus');
       case 'nexus://extra': return () => setIframe('/pages/extra?upd=', 'Extra');
       case 'nexus://data': return () => setIframe('/pages/data?upd=', 'Data');
       case 'nexus://data-usage': return () => setIframe('/pages/extra/data-use', 'Data Usage');
@@ -518,8 +518,8 @@ function search() {
               return "nexus://apps";
             case `https://${hostname}/pages/partners?upd=`:
               return "nexus://partners";
-            case `https://${hostname}/pages/roms?upd=`:
-              return "nexus://roms";
+            case `https://${hostname}/pages/evil-nexus?upd=`:
+              return "nexus://evil-nexus";
             case `https://${hostname}/pages/extra?upd=`:
               return "nexus://extra";
             case `https://${hostname}/pages/data?upd=`:
@@ -571,7 +571,7 @@ function search() {
               try {
                 host = new URL(__uv$config.decodeUrl(path));
               } catch {
-                host = new URL("https://nexus-sub.netlify.app");
+                host = new URL("https://nexus-is.onthewifi.com");
               }
               const faviconUrl = `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${host.hostname}&size=24`;
               let title = '';
