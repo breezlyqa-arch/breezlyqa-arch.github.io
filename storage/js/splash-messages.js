@@ -7,9 +7,6 @@ const phrases = [
     `hi gng`,
     `get a load of this guy 😂🫵`,
     `sussy blud 😂🫱🫱`,
-    `if shes seven it's gonna feel like heaven 😙`,
-    `the younger the berry the sweeter the cherry 😙`,
-    `if she aint 10 or below i aint cracking at all 👍`,
     `the quicker the snack, the thicker the stack 😙`,
     `follow my tiktok {@nexus.website}`,
     `iframe 0 nexus 1 👌`,
@@ -341,124 +338,108 @@ const phrases = [
     `{battery}`,
 ];
 
-const paragraph = document.getElementById('dynamicParagraph');
-paragraph.style.userSelect = 'none';
+  let userIP = null;
+  let flipped = false;
+  let currentPhrase = null;
 
-let userIP = null;
-let flipped = false;
-let currentPhrase = null;
-
-function setFlip(state) {
+  function setFlip(state) {
     flipped = state;
-    const rotation = flipped ? "180deg" : "0deg";
-    ["transform", "-ms-transform", "-webkit-transform", "-o-transform", "-moz-transform"]
-    .forEach(prefix => {
-        document.body.style[prefix] = `rotate(${rotation})`;
-    });
-}
+    const rotation = state ? "rotate(180deg)" : "rotate(0deg)";
+    const s = document.body.style;
+    s.transform = rotation;
+    s.msTransform = rotation;
+    s.webkitTransform = rotation;
+    s.MozTransform = rotation;
+    s.OTransform = rotation;
+  }
+  function resetFlip() { if (flipped) setFlip(false); }
+  const randInt = n => Math.floor(Math.random() * n);
 
-function resetFlip() {
-    if (flipped) setFlip(false);
-}
-
-function getRandomPhrase() {
+  function getRandomPhrase() {
+    if (!phrases.length) return "";
     if (phrases.length === 1) return phrases[0];
-    let phrase;
-    let attempts = 0;
-    do {
-        phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        attempts++;
-        if (attempts > 10) break;
-    } while (phrase === currentPhrase);
-    return phrase;
-}
+    let idx = randInt(phrases.length);
+    for (let i = 0; i < 10 && phrases[idx] === currentPhrase; i++) idx = randInt(phrases.length);
+    return phrases[idx];
+  }
 
-async function changeText() {
-    let randomPhrase = getRandomPhrase();
-    currentPhrase = randomPhrase;
+  function replaceAllSafe(str, find, repl) {
+    return str.replace(new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), repl);
+  }
 
-    if (typeof randomPhrase === "string") {
-        if (randomPhrase.includes("{ip}")) {
-            randomPhrase = randomPhrase.replaceAll("{ip}", userIP || "fetch error");
-        }
+  const renderHTML = html => (paragraph.innerHTML = html);
+  const renderText = text => (paragraph.textContent = text);
 
-        if (randomPhrase.includes("{hostname}")) {
-            randomPhrase = randomPhrase.replaceAll("{hostname}", location.hostname);
-        }
-
-        if (randomPhrase.includes("{time}")) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-GB', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            randomPhrase = randomPhrase.replace("{time}", timeString);
-        }
-
-        if (randomPhrase.includes("{battery}")) {
-            try {
-                const battery = await navigator.getBattery();
-                const batteryPercent = Math.round(battery.level * 100) + "%";
-                randomPhrase = randomPhrase.replace("{battery}", batteryPercent);
-            }
-            catch (e) {
-                randomPhrase = randomPhrase.replace("{battery}", ", actually i dont know what it is.");
-                console.error("Battery info not available", e);
-            }
-        }
-
-        if (randomPhrase.includes("{here}")) {
-            randomPhrase = randomPhrase.replace(
-                "{here}",
-                `<a href="/storage/text/changelog.txt" target="_blank" style="color: lightblue; text-decoration: underline; cursor: pointer;">here</a>`
-            );
-            paragraph.innerHTML = randomPhrase;
-        } else {
-            paragraph.textContent = randomPhrase;
-        }
-
-        if (randomPhrase.includes("{@nexus.website}")) {
-            randomPhrase = randomPhrase.replace(
-                "{@nexus.website}",
-                `<a href="/static/load/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2FBngxws%2Cwgbqive" target="_self" style="color: lightblue; text-decoration: underline; cursor: pointer;">@nexus.website</a>`
-            );
-            paragraph.innerHTML = randomPhrase;
-        } else {
-            paragraph.textContent = randomPhrase;
-        }
-
-        if (randomPhrase === "🙂 dıןɟ ʎddıןɟ ɐ pıp ǝƃɐd ǝɥʇ sdooɥʍ") {
-            setFlip(true);
-        } else {
-            resetFlip();
-        }
+  async function enrichString(template) {
+    let out = String(template);
+    if (out.includes("{ip}")) out = replaceAllSafe(out, "{ip}", userIP || "fetch error");
+    if (out.includes("{hostname}")) out = replaceAllSafe(out, "{hostname}", location.hostname);
+    if (out.includes("{time}")) {
+      const t = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      out = replaceAllSafe(out, "{time}", t);
     }
-    else if (randomPhrase.type === "image") {
-        paragraph.innerHTML = `<img src="${randomPhrase.src}" alt="Splash Image" style="max-width: ${randomPhrase.width}; height: auto;">`;
-        resetFlip();
+    if (out.includes("{battery}")) {
+      try {
+        if (navigator.getBattery) {
+          const b = await navigator.getBattery();
+          out = replaceAllSafe(out, "{battery}", Math.round(b.level * 100) + "%");
+        } else out = replaceAllSafe(out, "{battery}", "unavailable");
+      } catch { out = replaceAllSafe(out, "{battery}", "unavailable"); }
     }
-    else if (randomPhrase.type === "video") {
-        paragraph.innerHTML = `<video ${randomPhrase.other || ''} autoplay style="max-width: ${randomPhrase.width}; height: auto;" muted>
-            <source src="${randomPhrase.src}" type="video/mp4">
-        </video>`;
-        resetFlip();
+    if (out.includes("{here}")) {
+      out = replaceAllSafe("{here}", "{here}", ""); // prime regex cache (noop)
+      out = out.replace(
+        "{here}",
+        `<a href="/storage/text/changelog.txt" target="_blank" style="color:lightblue;text-decoration:underline;cursor:pointer">here</a>`
+      );
     }
-}
+    if (out.includes("{@nexus.website}")) {
+      out = out.replace(
+        "{@nexus.website}",
+        `<a href="/static/load/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2FBngxws%2Cwgbqive" target="_self" style="color:lightblue;text-decoration:underline;cursor:pointer">@nexus.website</a>`
+      );
+    }
+    return out;
+  }
 
-window.onload = async () => {
+  async function changeText() {
+    const chosen = getRandomPhrase();
+    currentPhrase = chosen;
+
+    if (chosen && typeof chosen === "object") {
+      if (chosen.type === "image") {
+        renderHTML(`<img src="${chosen.src}" alt="Splash Image" style="max-width:${chosen.width || "100%"};height:auto;">`);
+        resetFlip(); return;
+      }
+      if (chosen.type === "video") {
+        renderHTML(
+          `<video ${chosen.other || ""} autoplay style="max-width:${chosen.width || "100%"};height:auto;" muted>
+             <source src="${chosen.src}" type="video/mp4">
+           </video>`
+        );
+        resetFlip(); return;
+      }
+      renderText(JSON.stringify(chosen)); resetFlip(); return;
+    }
+
+    const enriched = await enrichString(String(chosen));
+    /<a |<img |<video /i.test(enriched) ? renderHTML(enriched) : renderText(enriched);
+
+    if (enriched === "🙂 dıןɟ ʎddıןɟ ɐ pıp ǝƃɐd ǝɥʇ sdooɥʍ") setFlip(true);
+    else resetFlip();
+  }
+
+  window.addEventListener("load", async () => {
     try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        userIP = data.ip;
-        console.log("internet protocol fetched:", userIP);
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      userIP = data && data.ip ? data.ip : null;
+      console.log("internet protocol fetched:", userIP);
+    } catch (e) {
+      console.error("Failed to get IP", e);
     }
-    catch (e) {
-        console.error("Failed to get IP", e);
-    }
-
     await changeText();
-};
+  });
 
-paragraph.addEventListener('click', () => {
-    changeText();
-});
+  paragraph.addEventListener("click", changeText);
+})();
