@@ -149,7 +149,7 @@ const phrases = [
     `one more tab won’t hurt`,
     `one more juice box🧃for my coding session`,
     `html never tasted so good`,
-    `made with 💖 by breezly`,
+    `made with 💖 by nexus`,
     `pls unblock discord 🙏`,
     `📎hi i'm clippy and i’m stuck here`,
     `0 homework 1 tab`,
