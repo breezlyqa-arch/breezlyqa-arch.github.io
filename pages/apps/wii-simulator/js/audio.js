@@ -20,7 +20,7 @@ var userConfig = JSON.parse(localStorage.getItem('onliine-settings'));
 // BG Music
 var introBgMusic;
 var bgMusic = new Howl({
-    src: `${window.location.origin}/audio/bg-music.mp3`,
+    src: `${window.location.origin}/pages/apps/wii-simulator/audio/bg-music.mp3`,
     volume: userConfig.musicVol,
     loop: true
 });
