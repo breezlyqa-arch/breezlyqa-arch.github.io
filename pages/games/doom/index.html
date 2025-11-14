@@ -16,31 +16,45 @@
             overflow: hidden;
         }
 
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-            image-rendering: pixelated;
-            display: block;
+        /* container keeps correct aspect ratio */
+        #doomWrapper {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black;
         }
 
-        /* remove leftover space from center tag */
-        center { display: contents; }
+        canvas {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            image-rendering: pixelated;
+        }
     </style>
 </head>
 
 <body>
-    <canvas id="doomCanvas"></canvas>
+    <div id="doomWrapper">
+        <canvas id="doomCanvas"></canvas>
+    </div>
 
     <script>
         const canvas = document.getElementById("doomCanvas");
 
         Dos(canvas, { autolock: true }).ready((fs, main) => {
             fs.extract("DOOM.ZIP").then(() => {
-                main(["-c", "DOOM"]).then((ci) => {
+                main(["-c", "DOOM"]).then(ci => {
                     window.ci = ci;
-                    document.title = "DOOM";
                 });
             });
+        });
+
+        // rescale properly on iframe resize
+        window.addEventListener("resize", () => {
+            canvas.style.width = "100%";
+            canvas.style.height = "auto";
         });
     </script>
 </body>
