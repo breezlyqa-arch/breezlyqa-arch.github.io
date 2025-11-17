@@ -1,6 +1,6 @@
 self.__uv$config = {
     prefix: '/static/load/',
-    bare:'https://bare.koyeb.app',
+    bare:'https://mexi.mexi.rest/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: '/static/uv/uv.handler.js',
